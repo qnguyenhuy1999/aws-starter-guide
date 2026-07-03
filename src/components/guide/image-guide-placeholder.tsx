@@ -58,7 +58,7 @@ export function ImageGuidePlaceholder({
             className="text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors ml-1"
             aria-label="Copy image path"
           >
-            {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? <Check className="h-3.5 w-3.5 text-[hsl(var(--success))]" /> : <Copy className="h-3.5 w-3.5" />}
           </button>
         </div>
         <p className="text-xs text-[hsl(var(--muted-foreground))]">

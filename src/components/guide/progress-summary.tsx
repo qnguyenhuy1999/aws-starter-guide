@@ -39,14 +39,14 @@ function StatCard({ value, label, sublabel, highlight }: StatCardProps) {
       className={cn(
         "flex flex-col gap-1 rounded-xl border p-4 flex-1 min-w-0",
         highlight
-          ? "border-primary/30 bg-primary/5"
+          ? "border-[hsl(var(--primary))]/20 bg-[hsl(var(--primary))]/5"
           : "border-border bg-card"
       )}
     >
       <span
         className={cn(
           "text-3xl font-bold tabular-nums leading-none tracking-tight",
-          highlight ? "text-primary" : "text-foreground"
+          highlight ? "text-[hsl(var(--primary))]" : "text-foreground"
         )}
       >
         {value}
@@ -78,7 +78,7 @@ export function ProgressSummary() {
   const { text: motivationalText, emoji } = getMotivationalMessage(progressPercent);
 
   return (
-    <div className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <div className="flex flex-col gap-5 rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-6 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-base font-semibold text-foreground">Tiến độ học tập</h2>
@@ -122,7 +122,7 @@ export function ProgressSummary() {
       </div>
 
       {/* Motivational message */}
-      <div className="flex items-start gap-3 rounded-lg bg-muted/50 border border-border/60 px-4 py-3">
+      <div className="flex items-start gap-3 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--muted))]/40 px-4 py-3">
         <span className="text-xl leading-none mt-0.5" role="img" aria-label="motivation">
           {emoji}
         </span>

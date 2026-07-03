@@ -36,7 +36,7 @@ export default function LabsPage() {
       {/* Header */}
       <div className="flex flex-col gap-1 mb-8">
         <div className="flex items-center gap-2 mb-1">
-          <FlaskConical className="h-6 w-6 text-amber-500" />
+          <FlaskConical className="h-6 w-6 text-[hsl(var(--warning))]" />
           <h1 className="text-2xl font-bold tracking-tight">Labs thực hành</h1>
           <span className="ml-1 text-sm text-[hsl(var(--muted-foreground))] font-normal">
             ({filteredLabs.length} lab{filteredLabs.length !== 1 ? "s" : ""})
@@ -49,7 +49,11 @@ export default function LabsPage() {
 
       {/* Filter */}
       <div className="mb-6">
+        <label htmlFor="lab-stage-filter" className="mb-2 block text-sm font-medium text-[hsl(var(--foreground))]">
+          Lọc theo giai đoạn
+        </label>
         <select
+          id="lab-stage-filter"
           value={selectedStage ?? ""}
           onChange={(e) =>
             setSelectedStage(e.target.value === "" ? null : Number(e.target.value))

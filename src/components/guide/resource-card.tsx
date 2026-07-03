@@ -7,27 +7,27 @@ import { cn } from "@/lib/utils";
 
 const TYPE_CONFIG: Record<
   Resource["type"],
-  { label: string; className: string }
+  { label: string; badgeVariant: "default" | "secondary" | "outline" }
 > = {
   official: {
     label: "Official",
-    className: "bg-blue-100 text-blue-700 hover:bg-blue-100",
+    badgeVariant: "secondary",
   },
   video: {
     label: "Video",
-    className: "bg-red-100 text-red-700 hover:bg-red-100",
+    badgeVariant: "outline",
   },
   course: {
     label: "Course",
-    className: "bg-green-100 text-green-700 hover:bg-green-100",
+    badgeVariant: "default",
   },
   book: {
     label: "Book",
-    className: "bg-amber-100 text-amber-700 hover:bg-amber-100",
+    badgeVariant: "secondary",
   },
   tool: {
     label: "Tool",
-    className: "bg-purple-100 text-purple-700 hover:bg-purple-100",
+    badgeVariant: "outline",
   },
 };
 
@@ -42,15 +42,15 @@ export default function ResourceCard({ resource }: ResourceCardProps) {
     <Card className="flex flex-col h-full">
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-center gap-2 mb-2">
-          <Badge className={cn("text-xs font-medium", typeConfig.className)}>
+          <Badge variant={typeConfig.badgeVariant} className="text-xs font-medium">
             {typeConfig.label}
           </Badge>
           {resource.isFree ? (
-            <Badge className="bg-green-100 text-green-700 hover:bg-green-100 text-xs font-medium">
+            <Badge className="bg-[hsl(var(--success))]/10 text-[hsl(var(--success))] text-xs font-medium">
               Miễn phí
             </Badge>
           ) : (
-            <Badge className="bg-muted text-muted-foreground hover:bg-muted text-xs font-medium">
+            <Badge variant="outline" className="text-xs font-medium">
               Có phí
             </Badge>
           )}
@@ -77,9 +77,14 @@ export default function ResourceCard({ resource }: ResourceCardProps) {
           </div>
         )}
 
-        <a href={resource.url} target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ size: "sm" }), "w-full mt-auto")}>
-            <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
-            Xem tài nguyên
+        <a
+          href={resource.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(buttonVariants({ size: "sm", variant: "outline" }), "mt-auto w-full")}
+        >
+          <ExternalLink className="mr-1.5 h-3.5 w-3.5" />
+          Xem tài nguyên
         </a>
       </CardContent>
     </Card>

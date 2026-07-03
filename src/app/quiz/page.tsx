@@ -1,291 +1,135 @@
-import { stages } from "@/content/stages";
 import Link from "next/link";
+import type { ElementType } from "react";
+import { ArrowRight, BookOpen, CheckCircle2, CircleDashed, ListChecks } from "lucide-react";
+import { stages } from "@/content/stages";
+import { Card, CardContent } from "@/components/ui/card";
 
 export const metadata = {
   title: "Quiz kiểm tra kiến thức | AWS Starter Guide",
 };
+
+function StatCard({
+  value,
+  label,
+  icon: Icon,
+}: {
+  value: number;
+  label: string;
+  icon: ElementType;
+}) {
+  return (
+    <Card className="border-[hsl(var(--border))]/80 bg-[hsl(var(--card))]/80">
+      <CardContent className="flex items-center gap-4 p-5">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))]">
+          <Icon className="h-5 w-5" aria-hidden="true" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-2xl font-bold tabular-nums leading-none text-foreground">{value}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{label}</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function QuizPage() {
   const totalQuestions = stages.reduce((acc, s) => acc + s.quiz.length, 0);
   const stagesWithQuiz = stages.filter((s) => s.quiz.length > 0);
 
   return (
-    <main className="quiz-page">
-      <style>{`
-        .quiz-page {
-          min-height: 100vh;
-          background: #0F172A;
-          color: #F8FAFC;
-          font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
-          padding: 3rem 1.5rem 5rem;
-        }
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden rounded-3xl border border-[hsl(var(--border))] bg-gradient-to-br from-[hsl(var(--primary))]/8 via-[hsl(var(--card))] to-[hsl(var(--muted))]/40 p-6 sm:p-8">
+        <div className="relative">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center rounded-full border border-[hsl(var(--primary))]/20 bg-[hsl(var(--primary))]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[hsl(var(--primary))]">
+              Kiểm tra kiến thức
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--background))]/80 px-3 py-1 text-xs text-muted-foreground">
+              <ListChecks className="h-3.5 w-3.5" aria-hidden="true" />
+              {stagesWithQuiz.length} giai đoạn có quiz
+            </span>
+          </div>
 
-        .quiz-header {
-          max-width: 860px;
-          margin: 0 auto 2.5rem;
-        }
+          <div className="mt-5 max-w-2xl">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              Quiz kiểm tra kiến thức AWS
+            </h1>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground sm:text-base">
+              Ôn luyện từng giai đoạn học AWS. Chọn một stage để mở quiz ngay tại bài học tương ứng và theo dõi tiến độ của bạn.
+            </p>
+          </div>
 
-        .quiz-eyebrow {
-          font-size: 0.72rem;
-          font-weight: 600;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: #38BDF8;
-          margin-bottom: 0.75rem;
-        }
-
-        .quiz-title {
-          font-size: clamp(1.6rem, 4vw, 2.4rem);
-          font-weight: 700;
-          line-height: 1.2;
-          text-wrap: balance;
-          color: #F8FAFC;
-          margin: 0 0 1rem;
-        }
-
-        .quiz-subtitle {
-          font-size: 0.95rem;
-          color: #94A3B8;
-          line-height: 1.6;
-          max-width: 520px;
-        }
-
-        .stats-bar {
-          display: flex;
-          gap: 1px;
-          max-width: 860px;
-          margin: 0 auto 3rem;
-          border-radius: 10px;
-          overflow: hidden;
-          background: #1E3A5F;
-        }
-
-        .stat-block {
-          flex: 1;
-          background: #162032;
-          padding: 1.25rem 1.5rem;
-          display: flex;
-          flex-direction: column;
-          gap: 0.25rem;
-        }
-
-        .stat-block:first-child {
-          border-radius: 10px 0 0 10px;
-        }
-
-        .stat-block:last-child {
-          border-radius: 0 10px 10px 0;
-        }
-
-        .stat-number {
-          font-family: ui-monospace, 'SF Mono', Consolas, monospace;
-          font-size: 2rem;
-          font-weight: 700;
-          color: #38BDF8;
-          line-height: 1;
-          font-variant-numeric: tabular-nums;
-        }
-
-        .stat-label {
-          font-size: 0.8rem;
-          color: #64748B;
-          font-weight: 500;
-          letter-spacing: 0.04em;
-        }
-
-        .section-label {
-          max-width: 860px;
-          margin: 0 auto 1rem;
-          font-size: 0.72rem;
-          font-weight: 600;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: #475569;
-        }
-
-        .cards-grid {
-          max-width: 860px;
-          margin: 0 auto;
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-          gap: 0.875rem;
-        }
-
-        .stage-card {
-          background: #162032;
-          border: 1px solid #1E3A5F;
-          border-radius: 10px;
-          padding: 1.25rem 1.25rem 1rem;
-          display: flex;
-          flex-direction: column;
-          gap: 0.875rem;
-          text-decoration: none;
-          color: inherit;
-          transition: border-color 150ms ease, background 150ms ease;
-          outline: none;
-        }
-
-        .stage-card:hover,
-        .stage-card:focus-visible {
-          border-color: #38BDF8;
-          background: #1A2B40;
-        }
-
-        .stage-card:focus-visible {
-          box-shadow: 0 0 0 2px #38BDF8;
-        }
-
-        .card-top {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          gap: 0.5rem;
-        }
-
-        .card-stage-num {
-          font-family: ui-monospace, 'SF Mono', Consolas, monospace;
-          font-size: 0.7rem;
-          font-weight: 600;
-          color: #38BDF8;
-          letter-spacing: 0.08em;
-          padding: 0.2rem 0.5rem;
-          background: rgba(56, 189, 248, 0.1);
-          border-radius: 4px;
-          white-space: nowrap;
-        }
-
-        .card-q-count {
-          font-family: ui-monospace, 'SF Mono', Consolas, monospace;
-          font-size: 0.75rem;
-          color: #64748B;
-          font-variant-numeric: tabular-nums;
-          white-space: nowrap;
-        }
-
-        .card-title {
-          font-size: 0.9rem;
-          font-weight: 600;
-          color: #CBD5E1;
-          line-height: 1.4;
-          flex: 1;
-        }
-
-        .card-footer {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          border-top: 1px solid #1E3A5F;
-          padding-top: 0.75rem;
-        }
-
-        .card-action {
-          font-size: 0.78rem;
-          font-weight: 500;
-          color: #38BDF8;
-          letter-spacing: 0.02em;
-        }
-
-        .card-arrow {
-          color: #38BDF8;
-          opacity: 0.6;
-          transition: opacity 150ms ease, transform 150ms ease;
-        }
-
-        .stage-card:hover .card-arrow,
-        .stage-card:focus-visible .card-arrow {
-          opacity: 1;
-          transform: translateX(3px);
-        }
-
-        @media (max-width: 540px) {
-          .quiz-page {
-            padding: 2rem 1rem 4rem;
-          }
-          .stats-bar {
-            flex-direction: column;
-            gap: 1px;
-          }
-          .stat-block:first-child {
-            border-radius: 10px 10px 0 0;
-          }
-          .stat-block:last-child {
-            border-radius: 0 0 10px 10px;
-          }
-          .cards-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .stage-card,
-          .card-arrow {
-            transition: none;
-          }
-        }
-      `}</style>
-
-      <div className="quiz-header">
-        <p className="quiz-eyebrow">AWS Starter Guide</p>
-        <h1 className="quiz-title">Quiz kiểm tra kiến thức</h1>
-        <p className="quiz-subtitle">
-          Ôn luyện từng giai đoạn học AWS. Chọn một stage bên dưới để bắt đầu
-          làm quiz ngay tại trang đó.
-        </p>
-      </div>
-
-      <div className="stats-bar">
-        <div className="stat-block">
-          <span className="stat-number">{totalQuestions}</span>
-          <span className="stat-label">Tổng câu hỏi</span>
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <StatCard value={totalQuestions} label="Tổng câu hỏi" icon={BookOpen} />
+            <StatCard value={stagesWithQuiz.length} label="Stages có quiz" icon={CheckCircle2} />
+            <StatCard value={stages.length} label="Tổng stages" icon={CircleDashed} />
+          </div>
         </div>
-        <div className="stat-block">
-          <span className="stat-number">{stagesWithQuiz.length}</span>
-          <span className="stat-label">Stages có quiz</span>
-        </div>
-        <div className="stat-block">
-          <span className="stat-number">{stages.length}</span>
-          <span className="stat-label">Tổng stages</span>
-        </div>
-      </div>
+      </section>
 
-      <p className="section-label">Chọn stage để làm quiz</p>
+      <section className="mt-10">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+              Chọn stage
+            </p>
+            <h2 className="mt-2 text-xl font-semibold text-foreground">
+              Bắt đầu một bài quiz
+            </h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Mỗi stage dẫn bạn đến quiz gắn với nội dung bài học.
+          </p>
+        </div>
 
-      <div className="cards-grid">
-        {stagesWithQuiz.map((stage, index) => (
-          <Link
-            key={stage.id}
-            href={`/stages/${stage.slug}#quiz`}
-            className="stage-card"
-          >
-            <div className="card-top">
-              <span className="card-stage-num">
-                Stage {String(index + 1).padStart(2, "0")}
-              </span>
-              <span className="card-q-count">{stage.quiz.length} câu</span>
-            </div>
-            <p className="card-title">{stage.title}</p>
-            <div className="card-footer">
-              <span className="card-action">Làm quiz</span>
-              <svg
-                className="card-arrow"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                aria-hidden="true"
+        {stagesWithQuiz.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-[hsl(var(--border))] bg-[hsl(var(--card))] p-10 text-center text-sm text-muted-foreground">
+            Chưa có quiz nào được cấu hình.
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {stagesWithQuiz.map((stage, index) => (
+              <Link
+                key={stage.id}
+                href={`/stages/${stage.slug}#quiz`}
+                className="group block"
               >
-                <path
-                  d="M3 8h10M9 4l4 4-4 4"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </main>
+                <article className="flex h-full flex-col rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[hsl(var(--primary))]/25 hover:shadow-lg">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[hsl(var(--primary))]/10 text-sm font-bold tabular-nums text-[hsl(var(--primary))]">
+                        {String(index + 1).padStart(2, "0")}
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                          Stage {stage.id}
+                        </p>
+                        <h3 className="mt-1 line-clamp-2 text-base font-semibold leading-snug text-foreground group-hover:text-[hsl(var(--primary))]">
+                          {stage.title}
+                        </h3>
+                      </div>
+                    </div>
+                    <span className="inline-flex shrink-0 rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--muted))]/40 px-2.5 py-1 text-xs tabular-nums text-muted-foreground">
+                      {stage.quiz.length} câu
+                    </span>
+                  </div>
+
+                  <p className="mt-4 line-clamp-3 text-sm leading-6 text-muted-foreground">
+                    {stage.subtitle}
+                  </p>
+
+                  <div className="mt-auto pt-5">
+                    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-[hsl(var(--primary))]">
+                      Làm quiz
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                    </span>
+                  </div>
+                </article>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
   );
 }

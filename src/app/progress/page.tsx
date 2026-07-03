@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import type { ElementType } from "react";
+import { AlertTriangle, BarChart3, CheckCircle2, RotateCcw, ScrollText } from "lucide-react";
 import { stages } from "@/content/stages";
 import {
   getCompletedStages,
@@ -9,16 +11,11 @@ import {
   resetAllProgress,
 } from "@/lib/progress-storage";
 import { Progress } from "@/components/ui/progress";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface ProgressData {
   completedStageIds: number[];
@@ -31,57 +28,40 @@ function StatCard({
   value,
   max,
   accent,
+  icon: Icon,
 }: {
   label: string;
   value: number;
   max?: number;
   accent?: boolean;
+  icon: ElementType;
 }) {
   return (
-    <div
-      style={{
-        background: "var(--surface)",
-        border: "1px solid var(--border)",
-        borderRadius: "10px",
-        padding: "20px 24px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "6px",
-        minWidth: 0,
-      }}
-    >
-      <span
-        style={{
-          fontSize: "12px",
-          fontWeight: 500,
-          letterSpacing: "0.06em",
-          textTransform: "uppercase",
-          color: "var(--muted)",
-        }}
-      >
-        {label}
-      </span>
-      <span
-        style={{
-          fontSize: "28px",
-          fontWeight: 700,
-          fontVariantNumeric: "tabular-nums",
-          color: accent ? "var(--accent)" : "var(--text)",
-          lineHeight: 1.1,
-        }}
-      >
-        {value}
-        {max !== undefined && (
-          <span style={{ fontSize: "16px", fontWeight: 400, color: "var(--muted)", marginLeft: "4px" }}>
-            / {max}
-          </span>
-        )}
-      </span>
-    </div>
+    <Card className={cn("border-[hsl(var(--border))]/80", accent && "border-[hsl(var(--primary))]/20 bg-[hsl(var(--primary))]/5")}>
+      <CardContent className="flex items-center gap-4 p-5">
+        <div className={cn(
+          "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl",
+          accent
+            ? "bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))]"
+            : "bg-[hsl(var(--muted))]/50 text-[hsl(var(--muted-foreground))]"
+        )}>
+          <Icon className="h-5 w-5" aria-hidden="true" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-2xl font-bold tabular-nums leading-none text-foreground">
+            {value}
+            {max !== undefined && (
+              <span className="ml-1 text-sm font-medium text-muted-foreground">/ {max}</span>
+            )}
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{label}</p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
-function StageRow({
+function StageCard({
   stage,
   index,
   isCompleted,
@@ -96,135 +76,89 @@ function StageRow({
   checklistTotal: number;
   quizResult?: { score: number; total: number; answers: Record<string, string> };
 }) {
+  const progressValue = checklistTotal ? (checklistCount / checklistTotal) * 100 : 0;
+  const quizPassed = quizResult ? quizResult.score >= quizResult.total : false;
+
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "28px 1fr 120px 120px 100px",
-        alignItems: "center",
-        gap: "12px",
-        padding: "14px 16px",
-        borderRadius: "8px",
-        background: isCompleted ? "rgba(79, 142, 247, 0.04)" : "transparent",
-        borderLeft: isCompleted ? "2px solid var(--accent)" : "2px solid transparent",
-        transition: "background 0.15s",
-      }}
-    >
-      {/* Index */}
-      <span
-        style={{
-          fontSize: "11px",
-          fontVariantNumeric: "tabular-nums",
-          color: "var(--muted)",
-          fontWeight: 500,
-        }}
-      >
-        {String(index + 1).padStart(2, "0")}
-      </span>
-
-      {/* Title */}
-      <span
-        style={{
-          fontSize: "14px",
-          color: isCompleted ? "var(--text)" : "var(--muted-text)",
-          fontWeight: isCompleted ? 500 : 400,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
-      >
-        {stage.title}
-      </span>
-
-      {/* Checklist */}
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        {checklistTotal > 0 ? (
-          <>
-            <div
-              style={{
-                flex: 1,
-                height: "4px",
-                background: "var(--border)",
-                borderRadius: "2px",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  height: "100%",
-                  width: `${checklistTotal > 0 ? (checklistCount / checklistTotal) * 100 : 0}%`,
-                  background: checklistCount === checklistTotal ? "var(--success)" : "var(--accent)",
-                  borderRadius: "2px",
-                  transition: "width 0.3s ease",
-                }}
-              />
+    <Card className={cn(
+      "border-[hsl(var(--border))]/80 transition-all hover:-translate-y-0.5 hover:shadow-lg",
+      isCompleted && "border-[hsl(var(--success))]/20 bg-[hsl(var(--success))]/5"
+    )}>
+      <CardContent className="space-y-4 p-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <div className={cn(
+              "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold tabular-nums",
+              isCompleted
+                ? "bg-[hsl(var(--success))]/10 text-[hsl(var(--success))]"
+                : "bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))]"
+            )}>
+              {String(index + 1).padStart(2, "0")}
             </div>
-            <span
-              style={{
-                fontSize: "12px",
-                fontVariantNumeric: "tabular-nums",
-                color: "var(--muted)",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {checklistCount}/{checklistTotal}
-            </span>
-          </>
-        ) : (
-          <span style={{ fontSize: "12px", color: "var(--border)" }}>—</span>
-        )}
-      </div>
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                Stage {stage.id}
+              </p>
+              <h3 className="mt-1 text-base font-semibold leading-snug text-foreground">
+                {stage.title}
+              </h3>
+            </div>
+          </div>
 
-      {/* Quiz */}
-      <div>
-        {quizResult ? (
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "5px",
-              fontSize: "12px",
-              fontVariantNumeric: "tabular-nums",
-              fontWeight: 500,
-              color: quizResult.score >= quizResult.total ? "var(--success)" : "#f87171",
-              background: quizResult.score >= quizResult.total ? "rgba(34,197,94,0.1)" : "rgba(248,113,113,0.1)",
-              borderRadius: "5px",
-              padding: "3px 8px",
-            }}
+          <Badge
+            variant={isCompleted ? "default" : "outline"}
+            className={cn(
+              "shrink-0",
+              isCompleted && "bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))]"
+            )}
           >
-            <span>{quizResult.score >= quizResult.total ? "✓" : "✗"}</span>
-            {quizResult.score}/{quizResult.total}
-          </span>
-        ) : (
-          <span style={{ fontSize: "12px", color: "var(--border)" }}>—</span>
-        )}
-      </div>
+            {isCompleted ? "Hoàn thành" : "Chưa xong"}
+          </Badge>
+        </div>
 
-      {/* Status badge */}
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <span
-          style={{
-            display: "inline-block",
-            fontSize: "11px",
-            fontWeight: 500,
-            letterSpacing: "0.04em",
-            padding: "3px 10px",
-            borderRadius: "20px",
-            background: isCompleted ? "rgba(34,197,94,0.12)" : "var(--surface)",
-            color: isCompleted ? "var(--success)" : "var(--muted)",
-            border: isCompleted ? "1px solid rgba(34,197,94,0.25)" : "1px solid var(--border)",
-          }}
-        >
-          {isCompleted ? "Hoàn thành" : "Chưa xong"}
-        </span>
-      </div>
-    </div>
+        <div className="grid gap-3 md:grid-cols-2">
+          <div className="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--muted))]/25 p-4">
+            <div className="mb-2 flex items-center justify-between gap-3 text-xs text-muted-foreground">
+              <span>Checklist</span>
+              <span className="tabular-nums">{checklistCount}/{checklistTotal}</span>
+            </div>
+            <Progress value={progressValue} className="h-2" />
+          </div>
+
+          <div className="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--muted))]/25 p-4">
+            <div className="mb-2 flex items-center justify-between gap-3 text-xs text-muted-foreground">
+              <span>Quiz</span>
+              {quizResult ? (
+                <span className={cn(
+                  "inline-flex items-center gap-1 rounded-full px-2 py-1 font-medium tabular-nums",
+                  quizPassed
+                    ? "bg-[hsl(var(--success))]/10 text-[hsl(var(--success))]"
+                    : "bg-[hsl(var(--destructive))]/10 text-[hsl(var(--destructive))]"
+                )}>
+                  {quizPassed ? <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" /> : <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />}
+                  {quizResult.score}/{quizResult.total}
+                </span>
+              ) : (
+                <span className="text-xs text-muted-foreground">Chưa làm</span>
+              )}
+            </div>
+            <p className="text-sm leading-6 text-muted-foreground">
+              {quizResult
+                ? quizPassed
+                  ? "Đã hoàn thành quiz cho stage này."
+                  : "Đã làm quiz nhưng chưa đạt điểm tối đa."
+                : "Kết quả quiz sẽ xuất hiện sau khi bạn hoàn thành bài kiểm tra."}
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
 export default function ProgressPage() {
   const [data, setData] = useState<ProgressData>(() =>
-    typeof window !== 'undefined'
+    typeof window !== "undefined"
       ? {
           completedStageIds: getCompletedStages(),
           checklists: getAllChecklists(),
@@ -243,278 +177,110 @@ export default function ProgressPage() {
   const totalStages = stages.length;
   const completedCount = data.completedStageIds.length;
   const progressPercent = totalStages > 0 ? (completedCount / totalStages) * 100 : 0;
-
   const totalChecklistDone = Object.values(data.checklists).filter(Boolean).length;
-
   const totalQuizzesPassed = Object.values(data.quizResults).filter((r) => r.score >= r.total).length;
 
   return (
-    <>
-      <style>{`
-        :root {
-          --bg: #0f1117;
-          --surface: #16192a;
-          --border: #252836;
-          --accent: #4f8ef7;
-          --success: #22c55e;
-          --text: #e2e6f0;
-          --muted: #6b7585;
-          --muted-text: #a0a8b8;
-        }
-
-        .progress-page {
-          min-height: 100vh;
-          background: var(--bg);
-          color: var(--text);
-          font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-          padding: 40px 24px 80px;
-        }
-
-        .progress-inner {
-          max-width: 860px;
-          margin: 0 auto;
-        }
-
-        .page-eyebrow {
-          font-size: 11px;
-          font-weight: 600;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: var(--accent);
-          margin-bottom: 10px;
-        }
-
-        .page-title {
-          font-size: clamp(24px, 4vw, 32px);
-          font-weight: 700;
-          color: var(--text);
-          margin: 0 0 6px;
-          line-height: 1.2;
-        }
-
-        .page-subtitle {
-          font-size: 14px;
-          color: var(--muted);
-          margin: 0 0 36px;
-        }
-
-        .stat-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 12px;
-          margin-bottom: 28px;
-        }
-
-        @media (max-width: 560px) {
-          .stat-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        .progress-bar-section {
-          background: var(--surface);
-          border: 1px solid var(--border);
-          border-radius: 10px;
-          padding: 20px 24px;
-          margin-bottom: 36px;
-        }
-
-        .progress-bar-label {
-          display: flex;
-          justify-content: space-between;
-          align-items: baseline;
-          margin-bottom: 12px;
-        }
-
-        .progress-bar-label-text {
-          font-size: 13px;
-          font-weight: 500;
-          color: var(--muted);
-        }
-
-        .progress-bar-pct {
-          font-size: 13px;
-          font-variant-numeric: tabular-nums;
-          font-weight: 600;
-          color: var(--accent);
-        }
-
-        .stages-section-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 12px;
-        }
-
-        .stages-label {
-          font-size: 11px;
-          font-weight: 600;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          color: var(--muted);
-        }
-
-        .table-header {
-          display: grid;
-          grid-template-columns: 28px 1fr 120px 120px 100px;
-          gap: 12px;
-          padding: 8px 16px;
-          margin-bottom: 4px;
-        }
-
-        .table-header span {
-          font-size: 11px;
-          font-weight: 600;
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          color: var(--muted);
-        }
-
-        .table-header span:last-child {
-          text-align: right;
-        }
-
-        .stages-list {
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-        }
-
-        .reset-section {
-          margin-top: 40px;
-          padding-top: 24px;
-          border-top: 1px solid var(--border);
-          display: flex;
-          justify-content: flex-end;
-        }
-
-        @media (max-width: 700px) {
-          .table-header,
-          .stage-row-inner {
-            grid-template-columns: 28px 1fr 80px !important;
-          }
-          .col-quiz,
-          .col-status {
-            display: none;
-          }
-        }
-      `}</style>
-
-      <div className="progress-page">
-        <div className="progress-inner">
-          {/* Header */}
-          <p className="page-eyebrow">AWS Starter Guide</p>
-          <h1 className="page-title">Tiến độ học tập</h1>
-          <p className="page-subtitle">Theo dõi quá trình học của bạn qua {totalStages} giai đoạn</p>
-
-          {/* Stat cards */}
-          <div className="stat-grid">
-            <StatCard label="Giai đoạn hoàn thành" value={completedCount} max={totalStages} accent />
-            <StatCard label="Checklist đã làm" value={totalChecklistDone} />
-            <StatCard label="Bài quiz đạt" value={totalQuizzesPassed} />
-          </div>
-
-          {/* Progress bar */}
-          <div className="progress-bar-section">
-            <div className="progress-bar-label">
-              <span className="progress-bar-label-text">Tổng tiến độ</span>
-              <span className="progress-bar-pct">{Math.round(progressPercent)}%</span>
-            </div>
-            <Progress value={progressPercent} />
-          </div>
-
-          {/* Per-stage table */}
-          <div className="stages-section-header">
-            <span className="stages-label">Chi tiết từng giai đoạn</span>
-          </div>
-
-          <div className="table-header">
-            <span>#</span>
-            <span>Giai đoạn</span>
-            <span>Checklist</span>
-            <span>Quiz</span>
-            <span style={{ textAlign: "right" }}>Trạng thái</span>
-          </div>
-
-          <div className="stages-list">
-            {stages.map((stage, i) => {
-              const stageItemIds = stage.checklist.map((c) => c.id);
-              const checklistDoneCount = stageItemIds.filter((id) => data.checklists[id]).length;
-              const checklistTotalCount = stageItemIds.length;
-              const quizResult = data.quizResults[stage.slug];
-              const isCompleted = data.completedStageIds.includes(stage.id);
-
-              return (
-                <StageRow
-                  key={stage.id}
-                  stage={stage}
-                  index={i}
-                  isCompleted={isCompleted}
-                  checklistCount={checklistDoneCount}
-                  checklistTotal={checklistTotalCount}
-                  quizResult={quizResult}
-                />
-              );
-            })}
-          </div>
-
-          {/* Reset */}
-          <div className="reset-section">
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm"
-                  style={{
-                    borderColor: "var(--border)",
-                    color: "var(--muted)",
-                    background: "transparent",
-                    fontSize: "13px",
-                  }}
-                >
-                  Đặt lại tiến độ
-                </Button>
-              </DialogTrigger>
-              <DialogContent
-                style={{
-                  background: "var(--surface)",
-                  border: "1px solid var(--border)",
-                  color: "var(--text)",
-                  borderRadius: "12px",
-                }}
-              >
-                <DialogHeader>
-                  <DialogTitle style={{ color: "var(--text)" }}>Xác nhận đặt lại</DialogTitle>
-                  <DialogDescription style={{ color: "var(--muted)" }}>
-                    Thao tác này sẽ xóa toàn bộ tiến độ học tập, bao gồm checklist và kết quả quiz. Hành động này không thể hoàn tác.
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter style={{ gap: "8px" }}>
-                  <Button
-                    variant="outline"
-                    onClick={() => setDialogOpen(false)}
-                    style={{
-                      borderColor: "var(--border)",
-                      color: "var(--muted)",
-                      background: "transparent",
-                    }}
-                  >
-                    Hủy
-                  </Button>
-                  <Button
-                    onClick={handleReset}
-                    style={{
-                      background: "#ef4444",
-                      color: "#fff",
-                      border: "none",
-                    }}
-                  >
-                    Đặt lại tất cả
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <section className="rounded-3xl border border-[hsl(var(--border))] bg-gradient-to-br from-[hsl(var(--card))] to-[hsl(var(--muted))]/35 p-6 sm:p-8">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center rounded-full border border-[hsl(var(--primary))]/20 bg-[hsl(var(--primary))]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[hsl(var(--primary))]">
+            Tiến độ học tập
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--background))]/80 px-3 py-1 text-xs text-muted-foreground">
+            <BarChart3 className="h-3.5 w-3.5" aria-hidden="true" />
+            {Math.round(progressPercent)}% hoàn thành
+          </span>
         </div>
+
+        <div className="mt-5 max-w-2xl">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            Theo dõi hành trình học AWS của bạn
+          </h1>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground sm:text-base">
+            Tiến độ được tổng hợp từ {totalStages} giai đoạn, checklist và quiz đã lưu trên thiết bị này.
+          </p>
+        </div>
+
+        <div className="mt-6 grid gap-3 md:grid-cols-3">
+          <StatCard label="Giai đoạn hoàn thành" value={completedCount} max={totalStages} accent icon={ScrollText} />
+          <StatCard label="Checklist đã làm" value={totalChecklistDone} icon={CheckCircle2} />
+          <StatCard label="Quiz đạt" value={totalQuizzesPassed} icon={BarChart3} />
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--background))]/80 p-5">
+          <div className="mb-3 flex items-center justify-between gap-3 text-sm">
+            <span className="font-medium text-foreground">Tổng tiến độ</span>
+            <span className="tabular-nums text-muted-foreground">{Math.round(progressPercent)}%</span>
+          </div>
+          <Progress value={progressPercent} className="h-2.5" />
+        </div>
+      </section>
+
+      <section className="mt-10">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+              Chi tiết
+            </p>
+            <h2 className="mt-2 text-xl font-semibold text-foreground">
+              Từng giai đoạn
+            </h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Mỗi thẻ hiển thị checklist, quiz và trạng thái hoàn thành.
+          </p>
+        </div>
+
+        <div className="grid gap-4">
+          {stages.map((stage, index) => {
+            const stageItemIds = stage.checklist.map((c) => c.id);
+            const checklistDoneCount = stageItemIds.filter((id) => data.checklists[id]).length;
+            const checklistTotalCount = stageItemIds.length;
+            const quizResult = data.quizResults[stage.slug];
+            const isCompleted = data.completedStageIds.includes(stage.id);
+
+            return (
+              <StageCard
+                key={stage.id}
+                stage={stage}
+                index={index}
+                isCompleted={isCompleted}
+                checklistCount={checklistDoneCount}
+                checklistTotal={checklistTotalCount}
+                quizResult={quizResult}
+              />
+            );
+          })}
+        </div>
+      </section>
+
+      <div className="mt-10 flex justify-end">
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm">
+              <RotateCcw className="h-3.5 w-3.5" />
+              Đặt lại tiến độ
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Xác nhận đặt lại</DialogTitle>
+              <DialogDescription>
+                Thao tác này sẽ xoá toàn bộ checklist, kết quả quiz và trạng thái hoàn thành của các giai đoạn.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                Hủy
+              </Button>
+              <Button variant="destructive" onClick={handleReset}>
+                Đặt lại tất cả
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
-    </>
+    </div>
   );
 }

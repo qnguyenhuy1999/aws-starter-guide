@@ -7,6 +7,16 @@ import { saveQuizResult, getQuizResult } from "@/lib/progress-storage";
 import type { QuizQuestion as QuizQuestionType } from "@/types/guide";
 import { cn } from "@/lib/utils";
 
+function getResultStyles(score: number, total: number) {
+  if (score === total) {
+    return "border-[hsl(var(--success))]/20 bg-[hsl(var(--success))]/10 text-[hsl(var(--foreground))]";
+  }
+  if (score >= total * 0.6) {
+    return "border-[hsl(var(--info))]/20 bg-[hsl(var(--info))]/10 text-[hsl(var(--foreground))]";
+  }
+  return "border-[hsl(var(--warning))]/20 bg-[hsl(var(--warning))]/10 text-[hsl(var(--foreground))]";
+}
+
 interface QuizProps {
   questions: QuizQuestionType[];
   stageSlug: string;
@@ -71,11 +81,7 @@ export function Quiz({ questions, stageSlug }: QuizProps) {
       {submitted && (
         <div className={cn(
           "mb-6 p-4 rounded-xl text-sm font-medium",
-          score === questions.length
-            ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800"
-            : score >= questions.length * 0.6
-            ? "bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800"
-            : "bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800"
+          getResultStyles(score, questions.length)
         )}>
           {score === questions.length
             ? "🎉 Xuất sắc! Bạn đã trả lời đúng tất cả câu hỏi!"
@@ -104,9 +110,9 @@ export function Quiz({ questions, stageSlug }: QuizProps) {
 
                   if (submitted) {
                     if (isCorrect) {
-                      optionClass = "border-emerald-400 bg-emerald-50 dark:bg-emerald-950/30";
+                      optionClass = "border-[hsl(var(--success))]/40 bg-[hsl(var(--success))]/10";
                     } else if (isSelected && !isCorrect) {
-                      optionClass = "border-red-400 bg-red-50 dark:bg-red-950/30";
+                      optionClass = "border-[hsl(var(--destructive))]/40 bg-[hsl(var(--destructive))]/10";
                     }
                   } else if (isSelected) {
                     optionClass = "border-[hsl(var(--primary))] bg-[hsl(var(--primary))]/5";
@@ -126,11 +132,11 @@ export function Quiz({ questions, stageSlug }: QuizProps) {
                     >
                       <span className={cn(
                         "h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 text-xs font-bold",
-                        isSelected && !submitted && "border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-white",
+                        isSelected && !submitted && "border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]",
                         !isSelected && !submitted && "border-[hsl(var(--border))]"
                       )}>
-                        {submitted && isCorrect && <CheckCircle className="h-4 w-4 text-emerald-500" />}
-                        {submitted && isSelected && !isCorrect && <XCircle className="h-4 w-4 text-red-500" />}
+                        {submitted && isCorrect && <CheckCircle className="h-4 w-4 text-[hsl(var(--success))]" />}
+                        {submitted && isSelected && !isCorrect && <XCircle className="h-4 w-4 text-[hsl(var(--destructive))]" />}
                       </span>
                       {option.text}
                     </button>
@@ -142,7 +148,7 @@ export function Quiz({ questions, stageSlug }: QuizProps) {
                 <div className="mt-3 p-3 rounded-lg bg-[hsl(var(--muted))]/50 text-xs text-[hsl(var(--muted-foreground))]">
                   <span className="font-semibold">Giải thích:</span> {q.explanation}
                   {correctOption && (
-                    <span className="block mt-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                    <span className="block mt-1 font-medium text-[hsl(var(--success))]">
                       ✓ Đáp án đúng: {correctOption.text}
                     </span>
                   )}

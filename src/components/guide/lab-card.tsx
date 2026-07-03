@@ -16,8 +16,8 @@ export function LabCard({ lab, className }: LabCardProps) {
         className
       )}>
         <div className="flex items-start gap-3">
-          <div className="h-10 w-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0">
-            <FlaskConical className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[hsl(var(--warning))]/10">
+            <FlaskConical className="h-5 w-5 text-[hsl(var(--warning))]" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-sm group-hover:text-[hsl(var(--primary))] transition-colors">

@@ -71,36 +71,31 @@ export default function ResourcesPage() {
         <div className="hidden sm:block w-px h-5 bg-[hsl(var(--border))]" />
 
         {/* Free only toggle */}
-        <label className="flex items-center gap-2 cursor-pointer select-none">
-          <div
-            role="switch"
-            aria-checked={showFreeOnly}
-            tabIndex={0}
-            onClick={() => setShowFreeOnly((v) => !v)}
-            onKeyDown={(e) => {
-              if (e.key === " " || e.key === "Enter") {
-                e.preventDefault();
-                setShowFreeOnly((v) => !v);
-              }
-            }}
+        <button
+          type="button"
+          onClick={() => setShowFreeOnly((v) => !v)}
+          className="flex items-center gap-2 rounded-full px-1 py-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--primary))] focus-visible:ring-offset-2"
+          aria-pressed={showFreeOnly}
+          aria-label="Chỉ hiển thị tài nguyên miễn phí"
+        >
+          <span
+            aria-hidden="true"
             className={cn(
-              "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--primary))] focus-visible:ring-offset-2",
-              showFreeOnly
-                ? "bg-[hsl(var(--primary))]"
-                : "bg-[hsl(var(--muted))]"
+              "relative inline-flex h-5 w-9 shrink-0 rounded-full border-2 border-transparent transition-colors",
+              showFreeOnly ? "bg-[hsl(var(--primary))]" : "bg-[hsl(var(--muted))]"
             )}
           >
             <span
               className={cn(
-                "pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform",
+                "pointer-events-none inline-block h-4 w-4 rounded-full bg-[hsl(var(--background))] shadow-sm transition-transform",
                 showFreeOnly ? "translate-x-4" : "translate-x-0"
               )}
             />
-          </div>
+          </span>
           <span className="text-sm text-[hsl(var(--foreground))]">
             Miễn phí
           </span>
-        </label>
+        </button>
       </div>
 
       {/* Grid */}

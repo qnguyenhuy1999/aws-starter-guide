@@ -13,6 +13,7 @@ import { Callout } from "@/components/guide/callout";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 import { StageTracker } from "./stage-tracker";
 
 export function generateStaticParams() {
@@ -129,7 +130,7 @@ export default async function StagePage({ params }: PageProps) {
         <section id="lab" className="mt-10">
           <h2 className="text-xl font-bold mb-4">Lab thực hành</h2>
           {stage.labs.map((lab) => (
-            <div key={lab.id} className="mb-8 border border-[hsl(var(--border))] rounded-xl p-5">
+            <div key={lab.id} className="mb-8 rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-5">
               <h3 className="font-bold text-lg mb-1">{lab.title}</h3>
               <p className="text-sm text-[hsl(var(--muted-foreground))] mb-4">{lab.objective}</p>
               <ol className="list-decimal list-inside space-y-2 mb-4">
@@ -163,22 +164,22 @@ export default async function StagePage({ params }: PageProps) {
           <h2 className="text-xl font-bold mb-4">Best Practices</h2>
           <div className="grid sm:grid-cols-2 gap-6">
             <div>
-              <h3 className="font-semibold text-emerald-700 dark:text-emerald-400 mb-2">Nên làm</h3>
+              <Badge variant="secondary" className="mb-3">Nên làm</Badge>
               <ul className="space-y-2">
                 {doItems.map((item, idx) => (
                   <li key={idx} className="flex gap-2 text-sm">
-                    <span className="text-emerald-500 shrink-0">✓</span>
+                    <span className="text-[hsl(var(--success))] shrink-0">✓</span>
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold text-red-700 dark:text-red-400 mb-2">Không nên</h3>
+              <Badge variant="outline" className="mb-3 text-[hsl(var(--destructive))] border-[hsl(var(--destructive))]/20">Không nên</Badge>
               <ul className="space-y-2">
                 {dontItems.map((item, idx) => (
                   <li key={idx} className="flex gap-2 text-sm">
-                    <span className="text-red-500 shrink-0">✗</span>
+                    <span className="text-[hsl(var(--destructive))] shrink-0">✗</span>
                     {item}
                   </li>
                 ))}

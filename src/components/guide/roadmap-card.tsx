@@ -15,22 +15,22 @@ export function RoadmapCard({ stage, isCompleted = false, className }: RoadmapCa
   return (
     <Link href={`/stages/${stage.slug}`}>
       <div className={cn(
-        "group relative rounded-2xl border p-5 transition-all hover:shadow-md hover:border-[hsl(var(--primary))]/40 cursor-pointer",
+        "group relative rounded-2xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-[hsl(var(--primary))]/30 cursor-pointer",
         isCompleted
-          ? "border-emerald-200 bg-emerald-50/30 dark:border-emerald-800 dark:bg-emerald-950/10"
+          ? "border-[hsl(var(--success))]/20 bg-[hsl(var(--success))]/8"
           : "border-[hsl(var(--border))] bg-[hsl(var(--card))]",
         className
       )}>
         {isCompleted && (
           <div className="absolute top-4 right-4">
-            <CheckCircle className="h-5 w-5 text-emerald-500" />
+            <CheckCircle className="h-5 w-5 text-[hsl(var(--success))]" />
           </div>
         )}
         <div className="flex items-start gap-4">
           <div className={cn(
             "h-10 w-10 rounded-xl flex items-center justify-center text-sm font-black shrink-0",
             isCompleted
-              ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400"
+              ? "bg-[hsl(var(--success))]/10 text-[hsl(var(--success))]"
               : "bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))]"
           )}>
             {stage.id}

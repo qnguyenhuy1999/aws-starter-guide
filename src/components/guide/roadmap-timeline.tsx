@@ -25,7 +25,7 @@ export function RoadmapTimeline({ stages, completedStageIds }: RoadmapTimelinePr
                 className={[
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-xs font-bold",
                   isCompleted
-                    ? "border-green-500 bg-green-500 text-white"
+                    ? "border-[hsl(var(--success))] bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))]"
                     : "border-primary bg-background text-primary",
                 ].join(" ")}
                 aria-label={`Stage ${stage.id}`}
@@ -36,7 +36,7 @@ export function RoadmapTimeline({ stages, completedStageIds }: RoadmapTimelinePr
                 <div
                   className={[
                     "mt-1 w-0.5 flex-1",
-                    isCompleted ? "bg-green-500" : "bg-border",
+                    isCompleted ? "bg-[hsl(var(--success))]" : "bg-border",
                   ].join(" ")}
                   aria-hidden="true"
                 />
@@ -51,7 +51,7 @@ export function RoadmapTimeline({ stages, completedStageIds }: RoadmapTimelinePr
                 </h3>
                 {isCompleted && (
                   <CheckCircle
-                    className="mt-0.5 h-4 w-4 shrink-0 text-green-500"
+                    className="mt-0.5 h-4 w-4 shrink-0 text-[hsl(var(--success))]"
                     aria-label="Completed"
                   />
                 )}

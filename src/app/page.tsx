@@ -111,7 +111,7 @@ export default function Home() {
               <li key={outcome} className="flex items-start gap-3">
                 <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
                   <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-                    <path d="M2 5l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary" style={{ color: "hsl(var(--primary))" }}/>
+                    <path d="M2 5l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[hsl(var(--primary))]" />
                   </svg>
                 </span>
                 <span className="text-sm leading-relaxed text-foreground">{outcome}</span>

@@ -12,8 +12,8 @@ interface ArchitectureDiagramProps {
 
 const NODE_STYLES: Record<ArchitectureNode["type"], string> = {
   service: "bg-[hsl(var(--primary))]/10 border-[hsl(var(--primary))]/30 text-[hsl(var(--primary))]",
-  user: "bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/30 dark:border-emerald-800 dark:text-emerald-400",
-  internet: "bg-slate-100 border-slate-200 text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400",
+  user: "bg-[hsl(var(--success))]/10 border-[hsl(var(--success))]/20 text-[hsl(var(--success))]",
+  internet: "bg-[hsl(var(--secondary))] border-[hsl(var(--border))] text-[hsl(var(--secondary-foreground))]",
   group: "bg-[hsl(var(--muted))]/50 border-[hsl(var(--border))] text-[hsl(var(--foreground))]",
 };
 

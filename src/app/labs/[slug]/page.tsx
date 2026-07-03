@@ -126,7 +126,7 @@ export default async function LabDetailPage({ params }: PageProps) {
             id="troubleshooting-heading"
             className="text-base font-semibold tracking-tight mb-3 flex items-center gap-2"
           >
-            <AlertCircle className="h-4 w-4 text-amber-500 shrink-0" />
+            <AlertCircle className="h-4 w-4 text-[hsl(var(--warning))] shrink-0" />
             Xử lý sự cố
           </h2>
           <Accordion type="multiple" className="border rounded-xl overflow-hidden">

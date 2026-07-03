@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface EmptyStateAction {
@@ -26,42 +27,44 @@ export function EmptyState({
   className,
 }: EmptyStateProps) {
   return (
-    <div
+    <Card
       className={cn(
-        "flex flex-col items-center justify-center text-center px-6 py-16 gap-4",
+        "border-dashed border-[hsl(var(--border))] bg-[hsl(var(--card))]/80",
         className
       )}
     >
-      {icon && (
-        <div className="flex items-center justify-center w-14 h-14 rounded-full bg-muted text-muted-foreground">
-          {icon}
-        </div>
-      )}
-
-      <div className="flex flex-col items-center gap-1.5 max-w-xs">
-        <h3 className="text-base font-semibold text-foreground">{title}</h3>
-        {description && (
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {description}
-          </p>
+      <CardContent className="flex flex-col items-center justify-center gap-4 px-6 py-16 text-center">
+        {icon && (
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]">
+            {icon}
+          </div>
         )}
-      </div>
 
-      {action && (
-        <div className="mt-2">
-          {action.href ? (
-            <Link href={action.href}>
-              <Button variant="default" size="sm">
-                {action.label}
-              </Button>
-            </Link>
-          ) : (
-            <Button variant="default" size="sm" onClick={action.onClick}>
-              {action.label}
-            </Button>
+        <div className="flex max-w-xs flex-col items-center gap-1.5">
+          <h3 className="text-base font-semibold text-foreground">{title}</h3>
+          {description && (
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {description}
+            </p>
           )}
         </div>
-      )}
-    </div>
+
+        {action && (
+          <div className="mt-2">
+            {action.href ? (
+              <Link href={action.href}>
+                <Button variant="default" size="sm">
+                  {action.label}
+                </Button>
+              </Link>
+            ) : (
+              <Button variant="default" size="sm" onClick={action.onClick}>
+                {action.label}
+              </Button>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

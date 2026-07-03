@@ -11,7 +11,7 @@ export function ServiceBadge({ service, className }: ServiceBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+        "inline-flex items-center rounded-full border border-transparent px-2.5 py-0.5 text-xs font-medium",
         getServiceColor(service),
         className
       )}

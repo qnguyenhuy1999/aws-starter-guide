@@ -20,6 +20,12 @@
   --border: 214 32% 91%;
   --input: 214 32% 91%;
   --ring: 221 83% 53%;
+  --success: 142 71% 36%;
+  --success-foreground: 0 0% 100%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 222 47% 11%;
+  --info: 217 91% 60%;
+  --info-foreground: 0 0% 100%;
   --radius: 0.75rem;
   --sidebar-width: 260px;
   --header-height: 64px;
@@ -45,6 +51,12 @@
   --border: 217 33% 22%;
   --input: 217 33% 22%;
   --ring: 217 91% 60%;
+  --success: 142 71% 45%;
+  --success-foreground: 0 0% 100%;
+  --warning: 38 92% 55%;
+  --warning-foreground: 222 47% 8%;
+  --info: 217 91% 60%;
+  --info-foreground: 0 0% 100%;
 }
 
 @theme inline {
@@ -61,6 +73,12 @@
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
   --color-destructive: hsl(var(--destructive));
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
@@ -84,6 +102,7 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color-scheme: light dark;
 }
 
 /* Scrollbar styling */

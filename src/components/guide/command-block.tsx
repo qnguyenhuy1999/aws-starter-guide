@@ -25,15 +25,15 @@ export function CommandBlock({ command, commands, className }: CommandBlockProps
   if (lines.length === 0) return null;
 
   return (
-    <div className={cn("rounded-md overflow-hidden text-sm font-mono", className)}>
+    <div className={cn("overflow-hidden rounded-2xl border border-[hsl(var(--border))] text-sm font-mono", className)}>
       {/* Header bar */}
-      <div className="flex items-center justify-between bg-zinc-800 px-3 py-2">
+      <div className="flex items-center justify-between border-b border-[hsl(var(--border))] bg-[hsl(var(--muted))]/40 px-3 py-2">
         <div className="flex items-center gap-2">
           {/* Terminal dots */}
-          <span className="h-3 w-3 rounded-full bg-red-500 opacity-80" />
-          <span className="h-3 w-3 rounded-full bg-yellow-400 opacity-80" />
-          <span className="h-3 w-3 rounded-full bg-green-500 opacity-80" />
-          <span className="ml-2 text-xs text-zinc-400 tracking-wide select-none">
+          <span className="h-3 w-3 rounded-full bg-[hsl(var(--destructive))] opacity-80" />
+          <span className="h-3 w-3 rounded-full bg-[hsl(var(--warning))] opacity-80" />
+          <span className="h-3 w-3 rounded-full bg-[hsl(var(--success))] opacity-80" />
+          <span className="ml-2 select-none text-xs tracking-wide text-[hsl(var(--muted-foreground))]">
             Terminal
           </span>
         </div>
@@ -45,8 +45,8 @@ export function CommandBlock({ command, commands, className }: CommandBlockProps
           className={cn(
             "flex items-center gap-1.5 rounded px-2 py-1 text-xs transition-colors",
             copied
-              ? "text-green-400"
-              : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700"
+              ? "text-[hsl(var(--success))]"
+              : "text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--foreground))]"
           )}
         >
           {copied ? (
@@ -63,11 +63,11 @@ export function CommandBlock({ command, commands, className }: CommandBlockProps
       </div>
 
       {/* Command lines */}
-      <div className="bg-zinc-900 px-4 py-3 space-y-1">
+      <div className="space-y-1 bg-[hsl(var(--background))] px-4 py-3">
         {lines.map((line, index) => (
           <div key={index} className="flex items-start gap-2">
-            <span className="select-none text-green-400 shrink-0">$</span>
-            <span className="text-zinc-100 whitespace-pre-wrap break-all">{line}</span>
+            <span className="shrink-0 select-none text-[hsl(var(--success))]">$</span>
+            <span className="whitespace-pre-wrap break-all text-[hsl(var(--foreground))]">{line}</span>
           </div>
         ))}
       </div>
