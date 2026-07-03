@@ -30,11 +30,12 @@ const TOC_SECTIONS = [
 ];
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
-export default function StagePage({ params }: PageProps) {
-  const stage = getStageBySlug(params.slug);
+export default async function StagePage({ params }: PageProps) {
+  const { slug } = await params;
+  const stage = getStageBySlug(slug);
   if (!stage) notFound();
 
   const bashSnippets = stage.codeSnippets.filter((s) => s.language === "bash");
@@ -49,7 +50,7 @@ export default function StagePage({ params }: PageProps) {
 
   return (
     <>
-      <StageTracker slug={params.slug} />
+      <StageTracker slug={slug} />
       <StageContentLayout toc={<TableOfContents sections={TOC_SECTIONS} />}>
         <StageHeader stage={stage} />
 
